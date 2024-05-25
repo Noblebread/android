@@ -1,21 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, TextInput, StyleSheet, FlatList, Text, Alert, TouchableOpacity } from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
+import RNPickerSelect from 'react-native-picker-select';
+import { AuthContext } from '../context/AuthContext';
+import { BASE_URL } from '../config';
 import axios from 'axios';
 
-
 const CreateDocumentRequestScreen = () => {
-    
   const [docRequests, setDocRequests] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [departmentId, setDepartmentId] = useState('');
+  const [departments, setDepartments] = useState([]);
   const [userName, setUserName] = useState('');
+  
+  const { userInfo } = useContext(AuthContext);
+  const { first_name, middle_name = '', last_name } = userInfo.user;
 
   useEffect(() => {
-    // Fetch document requests from API
     const fetchDocRequests = async () => {
       try {
-        const response = await axios.get('/api/document-requests');
+        const token = userInfo?.token;
+        if (!token) {
+          throw new Error('Token not found');
+        }
+        const response = await axios.get(`${BASE_URL}/document-requests`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setDocRequests(response.data);
       } catch (error) {
         console.error('Error fetching document requests:', error);
@@ -23,43 +35,109 @@ const CreateDocumentRequestScreen = () => {
     };
 
     fetchDocRequests();
-  }, []); // Empty dependency array ensures the effect runs only once
+  }, [userInfo]);
 
-  // Map over docRequests to create an array of options
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const token = userInfo?.token;
+        if (!token) {
+          throw new Error('Token not found');
+        }
+        const response = await axios.get(`${BASE_URL}/document-requests/departments`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const departmentOptions = response.data.map(department => ({
+          label: department.name,
+          value: department.id,
+        }));
+        setDepartments(departmentOptions);
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    };
+
+    fetchDepartments();
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (userInfo && userInfo.user) {
+      setUserName(`${userInfo.user.first_name} ${userInfo.user.middle_name || ''} ${userInfo.user.last_name}`);
+    }
+  }, [userInfo]);
+
   const options = docRequests.map(docRequest => ({
-    value: docRequest.id,
-    label: docRequest.name // Assuming there's a 'name' property in your DocumentRequest model
+    id: docRequest.id,
+    name: docRequest.name,
   }));
 
-  // Handle change in selected items
-  const handleSelectedItemsChange = selectedOptions => {
-    setSelectedItems(selectedOptions);
+  const handleSelectedItemsChange = selectedItems => {
+    setSelectedItems(selectedItems);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const token = userInfo?.token;
+      if (!token) {
+        throw new Error('Token not found');
+      }
+      const data = {
+        department_id: departmentId,
+        documentItems: selectedItems,
+      };
+      const response = await axios.post(`${BASE_URL}/document-requests`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      Alert.alert('Success', 'Document request created successfully');
+    } catch (error) {
+      console.error('Error creating document request:', error);
+      Alert.alert('Error', 'Failed to create document request');
+    }
   };
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Enter your name"
-        value={userName}
+        value={`${first_name} ${middle_name} ${last_name}`}
         onChangeText={setUserName}
         autoCapitalize="none"
-        editable={false} // Disable editing as it should be auto-filled
+        editable={false}
       />
-      <Select2
-        options={options}
-        value={selectedItems}
-        onChange={handleSelectedItemsChange}
-        isMulti
-        placeholder="Select document items"
+      <MultiSelect
+        hideTags
+        items={options}
+        uniqueKey="id"
+        onSelectedItemsChange={handleSelectedItemsChange}
+        selectedItems={selectedItems}
+        selectText="Pick Items"
+        searchInputPlaceholderText="Search Items..."
+        altFontFamily="ProximaNova-Light"
+        tagRemoveIconColor="#CCC"
+        tagBorderColor="#CCC"
+        tagTextColor="#CCC"
+        selectedItemTextColor="#CCC"
+        selectedItemIconColor="#CCC"
+        itemTextColor="#000"
+        displayKey="name"
+        searchInputStyle={{ color: '#CCC' }}
+        submitButtonColor="#CCC"
+        submitButtonText="Submit"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter department ID"
+      <RNPickerSelect
+        onValueChange={(value) => setDepartmentId(value)}
+        items={departments}
+        placeholder={{ label: "Select a department", value: null }}
+        style={pickerSelectStyles}
         value={departmentId}
-        onChangeText={setDepartmentId}
-        keyboardType="numeric"
       />
+      <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
+        <Text style={styles.saveButtonText}>Save</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -67,8 +145,8 @@ const CreateDocumentRequestScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
   },
   input: {
     borderWidth: 1,
@@ -76,7 +154,43 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginTop: 10,
-    width: '80%',
+    width: '100%',
+  },
+  item: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginTop: 10,
+  },
+  itemText: {
+    fontSize: 16,
+  },
+  saveButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputAndroid: {
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30,
+    marginTop: 10,
+    width: '100%',
   },
 });
 
