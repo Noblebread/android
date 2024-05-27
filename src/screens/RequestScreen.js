@@ -8,7 +8,7 @@ const RequestScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Request Screen</Text>
+            <Text style={styles.title}>Requests</Text>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DocumentRequest')}>
                     <Icon name="file" size={40} color="#000" />
