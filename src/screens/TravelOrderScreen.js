@@ -55,8 +55,10 @@ const TravelOrderScreen = () => {
         <Text style={styles.travelOrderText}>User: {`${item.user.first_name} ${item.user.middle_name} ${item.user.last_name}`}</Text>
         <Text style={styles.travelOrderText}>Type: {type}</Text>
         <Text style={styles.travelOrderText}>Transportation: {transportation}</Text>
+        <Text style={styles.travelOrderText}>Purpose: {item.destination}</Text>
         <Text style={styles.travelOrderText}>Date Leave: {item.date_leave}</Text>
         <Text style={styles.travelOrderText}>Date Return: {item.date_return}</Text>
+        <Text style={styles.travelOrderText}>Purpose: {item.purpose}</Text>
         <Text style={styles.travelOrderText}>Status: {status}</Text>
       </View>
     );
