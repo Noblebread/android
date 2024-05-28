@@ -1,28 +1,32 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
+import React, {useContext, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import {AuthContext} from '../context/AuthContext';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-//   const { isLoading, login, error } = useContext(AuthContext);
-   const {isLoading, login} = useContext(AuthContext);
+  //   const { isLoading, login, error } = useContext(AuthContext);
+  const {isLoading, login} = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
-     
       <Spinner visible={isLoading} />
       <View style={styles.wrapper}>
-        
         <View style={styles.header}>
-         
-          {/* <Image
-            source={require('../dauin-logo-full.png')} 
+          <Image
+            source={require('../../img/dauin-logo-full.png')}
             style={styles.logo2}
-          /> */}
+          />
         </View>
-        <Text style={styles.loginWork}>Human Resources</Text> 
+        <Text style={styles.loginWork}>Human Resources</Text>
         <View>
           <TextInput
             style={styles.input}
@@ -34,8 +38,6 @@ const LoginScreen = ({navigation}) => {
             <Text style={styles.errorText}>{error}</Text>
           ) : null} */}
         </View>
-
-       
 
         <TextInput
           style={styles.input}
@@ -49,9 +51,8 @@ const LoginScreen = ({navigation}) => {
           style={styles.loginButton}
           onPress={() => {
             login(email, password);
-          }}
-        >
-          <Text style={styles.buttonText}>Login</Text> 
+          }}>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    color: 'black'
+    color: 'black',
   },
   loginButton: {
     backgroundColor: '#2196F3', // Green color for the login button
@@ -96,20 +97,21 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 10,
     marginTop: -10,
-    marginBottom: 8
+    marginBottom: 8,
   },
   logo1: {
     width: 270, // Set the width of your square logo
     height: 150, // Set the height of your square logo
     resizeMode: 'contain', // Adjust the resizeMode as needed
-    marginRight: -22, 
-    marginLeft: 15, 
+    marginRight: -22,
+    marginLeft: 15,
   },
   logo2: {
-    width: 100, // Set the width of your circle logo
-    height: 82, // Set the height of your circle logo
+    width: 150, // Set the width of your circle logo
+    height: 150, // Set the height of your circle logo
     resizeMode: 'contain', // Adjust the resizeMode as needed
-    marginTop: 8
+    marginVertical: 10,
+    marginTop: -10,
   },
   header: {
     flexDirection: 'row',

@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, StyleSheet, FlatList, Text, Alert, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  FlatList,
+  Text,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import MultiSelect from 'react-native-multiple-select';
 import RNPickerSelect from 'react-native-picker-select';
-import { AuthContext } from '../context/AuthContext';
-import { BASE_URL } from '../config';
+import {AuthContext} from '../context/AuthContext';
+import {BASE_URL} from '../configs';
 import axios from 'axios';
 
 const CreateDocumentRequestScreen = () => {
@@ -12,9 +20,9 @@ const CreateDocumentRequestScreen = () => {
   const [departmentId, setDepartmentId] = useState('');
   const [departments, setDepartments] = useState([]);
   const [userName, setUserName] = useState('');
-  
-  const { userInfo } = useContext(AuthContext);
-  const { first_name, middle_name = '', last_name } = userInfo.user;
+
+  const {userInfo} = useContext(AuthContext);
+  const {first_name, middle_name = '', last_name} = userInfo.user;
 
   useEffect(() => {
     const fetchDocRequests = async () => {
@@ -44,11 +52,14 @@ const CreateDocumentRequestScreen = () => {
         if (!token) {
           throw new Error('Token not found');
         }
-        const response = await axios.get(`${BASE_URL}/document-requests/departments`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.get(
+          `${BASE_URL}/document-requests/departments`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         const departmentOptions = response.data.map(department => ({
           label: department.name,
           value: department.id,
@@ -64,7 +75,11 @@ const CreateDocumentRequestScreen = () => {
 
   useEffect(() => {
     if (userInfo && userInfo.user) {
-      setUserName(`${userInfo.user.first_name} ${userInfo.user.middle_name || ''} ${userInfo.user.last_name}`);
+      setUserName(
+        `${userInfo.user.first_name} ${userInfo.user.middle_name || ''} ${
+          userInfo.user.last_name
+        }`,
+      );
     }
   }, [userInfo]);
 
@@ -124,14 +139,14 @@ const CreateDocumentRequestScreen = () => {
         selectedItemIconColor="#CCC"
         itemTextColor="#000"
         displayKey="name"
-        searchInputStyle={{ color: '#CCC' }}
+        searchInputStyle={{color: '#CCC'}}
         submitButtonColor="#CCC"
         submitButtonText="Submit"
       />
       <RNPickerSelect
-        onValueChange={(value) => setDepartmentId(value)}
+        onValueChange={value => setDepartmentId(value)}
         items={departments}
-        placeholder={{ label: "Select a department", value: null }}
+        placeholder={{label: 'Select a department', value: null}}
         style={pickerSelectStyles}
         value={departmentId}
       />

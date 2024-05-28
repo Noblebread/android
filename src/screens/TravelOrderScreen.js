@@ -1,17 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  useWindowDimensions,
+  TextInput,
+} from 'react-native';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from '../context/AuthContext';
-import { BASE_URL } from '../config';
+import {useNavigation} from '@react-navigation/native';
+import {AuthContext} from '../context/AuthContext';
+import {BASE_URL} from '../configs';
+import {Icons} from '../configs/icons';
 
 const TravelOrderScreen = () => {
+  const {width} = useWindowDimensions();
   const [travelOrders, setTravelOrders] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [types, setTypes] = useState([]);
   const [transportations, setTransportations] = useState([]);
-  const { userInfo } = useContext(AuthContext);
+  const [search, setSearch] = useState('');
+  const {userInfo} = useContext(AuthContext);
   const token = userInfo?.token;
   const navigation = useNavigation();
 
@@ -44,20 +55,62 @@ const TravelOrderScreen = () => {
     navigation.navigate('CreateTravelOrder');
   };
 
-  const renderTravelOrder = ({ item }) => {
-    const status = statuses.find((status) => status.id === item.status_id)?.name || 'Unknown';
-    const type = types.find((type) => type.id === item.type_id)?.title || 'Unknown';
-    const transportation = transportations.find((transportation) => transportation.id === item.transportation_id)?.name || 'Unknown';
+  const filteredTravelRequests =
+    travelOrders &&
+    travelOrders.filter(leave => {
+      if (!search) {
+        return true;
+      }
+
+      const fullName = `${leave.user.first_name} ${leave.user.middle_name} ${leave.user.last_name}`;
+      const type =
+        types.find(type => type.id === leave.type_id)?.title || 'Unknown';
+      const status =
+        statuses.find(status => status.id === leave.status_id)?.name ||
+        'Unknown';
+      const transportation =
+        transportations.find(
+          transportation => transportation.id === leave.transportation_id,
+        )?.name || 'Unknown';
+
+      return (
+        fullName.toLowerCase().includes(search.toLowerCase()) ||
+        type.toLowerCase().includes(search.toLowerCase()) ||
+        status.toLowerCase().includes(search.toLowerCase()) ||
+        transportation.toLowerCase().includes(search.toLowerCase()) ||
+        leave.destination.toLowerCase().includes(search.toLowerCase()) ||
+        leave.purpose.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+
+  const renderTravelOrder = ({item}) => {
+    const status =
+      statuses.find(status => status.id === item.status_id)?.name || 'Unknown';
+    const type =
+      types.find(type => type.id === item.type_id)?.title || 'Unknown';
+    const transportation =
+      transportations.find(
+        transportation => transportation.id === item.transportation_id,
+      )?.name || 'Unknown';
 
     return (
-      <View style={styles.travelOrderItem}>
+      <View style={[styles.travelOrderItem, {width: width * 0.95}]}>
         <Text style={styles.travelOrderText}>ID: {item.id}</Text>
-        <Text style={styles.travelOrderText}>User: {`${item.user.first_name} ${item.user.middle_name} ${item.user.last_name}`}</Text>
+        <Text style={styles.travelOrderText}>
+          User:{' '}
+          {`${item.user.first_name} ${item.user.middle_name} ${item.user.last_name}`}
+        </Text>
         <Text style={styles.travelOrderText}>Type: {type}</Text>
-        <Text style={styles.travelOrderText}>Transportation: {transportation}</Text>
+        <Text style={styles.travelOrderText}>
+          Transportation: {transportation}
+        </Text>
         <Text style={styles.travelOrderText}>Purpose: {item.destination}</Text>
-        <Text style={styles.travelOrderText}>Date Leave: {item.date_leave}</Text>
-        <Text style={styles.travelOrderText}>Date Return: {item.date_return}</Text>
+        <Text style={styles.travelOrderText}>
+          Date Leave: {item.date_leave}
+        </Text>
+        <Text style={styles.travelOrderText}>
+          Date Return: {item.date_return}
+        </Text>
         <Text style={styles.travelOrderText}>Purpose: {item.purpose}</Text>
         <Text style={styles.travelOrderText}>Status: {status}</Text>
       </View>
@@ -66,16 +119,58 @@ const TravelOrderScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddTravelOrder}>
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
-      <View style={styles.travelOrdersContainer}>
-        <FlatList
-          data={travelOrders}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderTravelOrder}
-        />
+      <View
+        style={{
+          padding: 5,
+          width: width,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
+          marginTop: 5,
+        }}>
+        <View
+          style={{
+            width: width * 0.8,
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 10,
+            backgroundColor: '#f5f5f5',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <TextInput
+            style={{
+              flex: 1,
+              color: '#333',
+              padding: 0,
+            }}
+            placeholder="Search"
+            value={search}
+            onChangeText={val => setSearch(val)}
+          />
+          {search ? (
+            <TouchableOpacity onPress={() => setSearch('')}>
+              <Icons.FontAwesome name="close" size={20} color="#333" />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddTravelOrder}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
+
+      <FlatList
+        data={filteredTravelRequests}
+        keyExtractor={(_, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderTravelOrder}
+        contentContainerStyle={{
+          padding: 10,
+        }}
+      />
     </View>
   );
 };
@@ -86,7 +181,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#f5f5f5',
-    paddingTop: 20,
   },
   addButton: {
     position: 'absolute',
@@ -117,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 5,
     elevation: 3,
   },
