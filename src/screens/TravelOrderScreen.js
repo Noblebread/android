@@ -83,6 +83,21 @@ const TravelOrderScreen = () => {
       );
     });
 
+  const getStatusColor = status => {
+    switch (status) {
+      case 'Pending':
+        return 'yellow';
+      case 'Approved':
+        return 'rgb(3, 161, 3)';
+      case 'Cancelled':
+        return 'red';
+      case 'Completed':
+        return 'rgb(62, 7, 228)';
+      default:
+        return 'black';
+    }
+  };
+
   const renderTravelOrder = ({item}) => {
     const status =
       statuses.find(status => status.id === item.status_id)?.name || 'Unknown';
@@ -95,24 +110,70 @@ const TravelOrderScreen = () => {
 
     return (
       <View style={[styles.travelOrderItem, {width: width * 0.95}]}>
-        <Text style={styles.travelOrderText}>ID: {item.id}</Text>
-        <Text style={styles.travelOrderText}>
-          User:{' '}
-          {`${item.user.first_name} ${item.user.middle_name} ${item.user.last_name}`}
-        </Text>
-        <Text style={styles.travelOrderText}>Type: {type}</Text>
-        <Text style={styles.travelOrderText}>
-          Transportation: {transportation}
-        </Text>
-        <Text style={styles.travelOrderText}>Purpose: {item.destination}</Text>
-        <Text style={styles.travelOrderText}>
-          Date Leave: {item.date_leave}
-        </Text>
-        <Text style={styles.travelOrderText}>
-          Date Return: {item.date_return}
-        </Text>
-        <Text style={styles.travelOrderText}>Purpose: {item.purpose}</Text>
-        <Text style={styles.travelOrderText}>Status: {status}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            ID:
+          </Text>
+          <Text style={styles.travelOrderText}>{item.id}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            User:
+          </Text>
+          <Text style={styles.travelOrderText}>
+            {`${item.user.first_name} ${
+              item.user.middle_name ? item.user.middle_name + ' ' : ''
+            }${item.user.last_name}`}
+          </Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Type:
+          </Text>
+          <Text style={styles.travelOrderText}>{type}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Transportation:
+          </Text>
+          <Text style={styles.travelOrderText}>{transportation}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Destination:
+          </Text>
+          <Text style={styles.travelOrderText}>{item.destination}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Date Leave:
+          </Text>
+          <Text style={styles.travelOrderText}>{item.date_leave}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Date Return:
+          </Text>
+          <Text style={styles.travelOrderText}>{item.date_return}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Purpose:
+          </Text>
+          <Text style={styles.travelOrderText}>{item.purpose}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.travelOrderText, {fontWeight: 'bold'}]}>
+            Status:
+          </Text>
+          <Text
+            style={[
+              styles.travelOrderText,
+              {color: getStatusColor(status), fontWeight: 'bold'},
+            ]}>
+            {status}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -218,6 +279,7 @@ const styles = StyleSheet.create({
   travelOrderText: {
     fontSize: 16,
     marginBottom: 5,
+    color: '#000000',
   },
 });
 

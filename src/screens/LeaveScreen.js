@@ -72,6 +72,21 @@ const LeaveScreen = () => {
       );
     });
 
+  const getStatusColor = status => {
+    switch (status) {
+      case 'Pending':
+        return 'yellow';
+      case 'Approved':
+        return 'rgb(3, 161, 3)';
+      case 'Cancelled':
+        return 'red';
+      case 'Completed':
+        return 'rgb(62, 7, 228)';
+      default:
+        return 'black';
+    }
+  };
+
   const renderLeave = ({item}) => {
     const status =
       statuses.find(status => status.id === item.status_id)?.name || 'Unknown';
@@ -87,20 +102,48 @@ const LeaveScreen = () => {
             width: width * 0.95,
           },
         ]}>
-        <Text style={styles.leaveText}>ID: {item.id}</Text>
-        <Text style={styles.leaveText}>
-          User:{' '}
-          {`${user.first_name ?? ''} ${user.middle_name ?? ''} ${
-            user.last_name ?? ''
-          }`}
-        </Text>
-        <Text style={styles.leaveText}>Type: {type}</Text>
-        <Text style={styles.leaveText}>Date Leave: {item.date_leave}</Text>
-        <Text style={styles.leaveText}>Date Return: {item.date_return}</Text>
-        <Text style={styles.leaveText}>
-          Purpose: {item.purpose ?? 'No Input'}
-        </Text>
-        <Text style={styles.leaveText}>Status: {status}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>ID:</Text>
+          <Text style={styles.leaveText}>{item.id}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>User:</Text>
+          <Text style={styles.leaveText}>
+            {`${user.first_name ?? ''} ${
+              user.middle_name ? user.middle_name + ' ' : ''
+            }${user.last_name ?? ''}`}
+          </Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>Type:</Text>
+          <Text style={styles.leaveText}>{type}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>
+            Date Leave:
+          </Text>
+          <Text style={styles.leaveText}>{item.date_leave}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>
+            Date Return:
+          </Text>
+          <Text style={styles.leaveText}>{item.date_return}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>Purpose:</Text>
+          <Text style={styles.leaveText}>{item.purpose ?? 'No Input'}</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.leaveText, {fontWeight: 'bold'}]}>Status:</Text>
+          <Text
+            style={[
+              styles.leaveText,
+              {color: getStatusColor(status), fontWeight: 'bold'},
+            ]}>
+            {status}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -192,7 +235,7 @@ const styles = StyleSheet.create({
   },
   leaveItem: {
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f5',
     marginBottom: 10,
     borderRadius: 5,
     shadowColor: '#000',
@@ -204,6 +247,7 @@ const styles = StyleSheet.create({
   leaveText: {
     fontSize: 16,
     marginBottom: 5,
+    color: '#000000',
   },
 });
 

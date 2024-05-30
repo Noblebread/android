@@ -69,6 +69,21 @@ const DocumentRequestScreen = () => {
       );
     });
 
+  const getStatusColor = status => {
+    switch (status) {
+      case 'Pending':
+        return 'yellow';
+      case 'Approved':
+        return 'rgb(3, 161, 3)';
+      case 'Cancelled':
+        return 'red';
+      case 'Completed':
+        return 'rgb(62, 7, 228)';
+      default:
+        return 'black';
+    }
+  };
+
   const renderDocumentRequest = ({item}) => {
     const status =
       statuses.find(status => status.id === item.status_id)?.name || 'Unknown';
@@ -87,24 +102,53 @@ const DocumentRequestScreen = () => {
           shadowRadius: 5,
           elevation: 3,
         }}>
-        <Text style={styles.requestText}>Request ID: {item.id}</Text>
-        <Text style={styles.requestText}>
-          User:{' '}
-          {`${item.user.first_name} ${item.user.middle_name} ${item.user.last_name}`}
-        </Text>
-        <Text style={styles.requestText}>
-          Department: {item.department?.name ?? 'N/A'}
-        </Text>
-        <View style={styles.documentKeysContainer}>
-          {item.document_keys.map(key => (
-            <Text key={key.id} style={styles.documentKeyText}>
-              Document: {key.documents.name}
-            </Text>
-          ))}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <Text style={[styles.requestText, {fontWeight: 'bold'}]}>
+            Request ID
+          </Text>
+          <Text style={styles.requestText}>{item.id}</Text>
         </View>
-        <Text style={[styles.requestText, styles.statusText]}>
-          Status: {status}
-        </Text>
+
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.requestText, {fontWeight: 'bold'}]}>User</Text>
+          <Text style={styles.requestText}>
+            {`${item.user.first_name} ${
+              item.user.middle_name ? item.user.middle_name + ' ' : ''
+            }${item.user.last_name}`}
+          </Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.requestText, {fontWeight: 'bold'}]}>
+            Department
+          </Text>
+          <Text style={styles.requestText}>
+            {item.department?.name ?? 'N/A'}
+          </Text>
+        </View>
+        {item.document_keys.map((key, index) => (
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={[styles.requestText, {fontWeight: 'bold'}]}>
+              Document
+            </Text>
+            <Text key={index} style={styles.requestText}>
+              {key.documents.name}
+            </Text>
+          </View>
+        ))}
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.requestText, {fontWeight: 'bold'}]}>Status</Text>
+          <Text
+            style={[
+              styles.requestText,
+              {color: getStatusColor(status), fontWeight: 'bold'},
+            ]}>
+            {status}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -198,6 +242,7 @@ const styles = StyleSheet.create({
   requestText: {
     fontSize: 16,
     marginBottom: 5,
+    color: '#000000',
   },
   documentKeysContainer: {
     marginTop: 10,
