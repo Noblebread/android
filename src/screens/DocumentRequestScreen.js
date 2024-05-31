@@ -7,6 +7,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -130,13 +131,13 @@ const DocumentRequestScreen = () => {
           </Text>
         </View>
         {item.document_keys.map((key, index) => (
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View
+            key={index}
+            style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text style={[styles.requestText, {fontWeight: 'bold'}]}>
               Document
             </Text>
-            <Text key={index} style={styles.requestText}>
-              {key.documents.name}
-            </Text>
+            <Text style={styles.requestText}>{key.documents.name}</Text>
           </View>
         ))}
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -182,6 +183,7 @@ const DocumentRequestScreen = () => {
               padding: 0,
             }}
             placeholder="Search"
+            placeholderTextColor={'gray'}
             value={search}
             onChangeText={val => setSearch(val)}
           />
@@ -196,15 +198,26 @@ const DocumentRequestScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={filteredDocumentRequests}
-        keyExtractor={(_, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderDocumentRequest}
-        contentContainerStyle={{
-          padding: 10,
-        }}
-      />
+      {documentRequests.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator size="large" color="blue" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredDocumentRequests}
+          keyExtractor={(_, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderDocumentRequest}
+          contentContainerStyle={{
+            padding: 10,
+          }}
+        />
+      )}
     </View>
   );
 };

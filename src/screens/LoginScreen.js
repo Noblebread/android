@@ -32,6 +32,7 @@ const LoginScreen = ({navigation}) => {
             style={styles.input}
             value={email}
             placeholder="Enter your email"
+            placeholderTextColor={'gray'}
             onChangeText={text => setEmail(text)}
           />
           {/* {error ? (
@@ -42,6 +43,7 @@ const LoginScreen = ({navigation}) => {
         <TextInput
           style={styles.input}
           placeholder="Enter your password"
+          placeholderTextColor={'gray'}
           secureTextEntry
           value={password}
           onChangeText={text => setPassword(text)}
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   loginButton: {
-    backgroundColor: '#2196F3', // Green color for the login button
+    backgroundColor: '#2196F3',
     paddingVertical: 15,
     borderRadius: 5,
     alignItems: 'center',

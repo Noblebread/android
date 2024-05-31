@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     textAlign: 'center',
+    color: '#000',
   },
   input: {
     height: 40,
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
+    color: '#000',
   },
   error: {
     color: 'red',
@@ -226,6 +228,7 @@ const pickerSelectStyles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
+    color: '#000',
   },
 });
 

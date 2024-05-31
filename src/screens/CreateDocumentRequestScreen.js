@@ -118,6 +118,7 @@ const CreateDocumentRequestScreen = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
+        placeholderTextColor={'gray'}
         value={`${first_name} ${middle_name} ${last_name}`}
         onChangeText={setUserName}
         autoCapitalize="none"
@@ -169,6 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginTop: 10,
+    color: '#000',
     width: '100%',
   },
   item: {

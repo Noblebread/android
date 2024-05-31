@@ -178,6 +178,7 @@ const CreateTravelOrderScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Destination"
+        placeholderTextColor={'gray'}
         value={destination}
         onChangeText={value => setDestination(value)}
       />
@@ -197,6 +198,7 @@ const CreateTravelOrderScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Expenses"
+        placeholderTextColor={'gray'}
         value={expenses}
         onChangeText={value => setExpenses(value)}
         keyboardType="numeric"
@@ -207,6 +209,7 @@ const CreateTravelOrderScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Purpose"
+        placeholderTextColor={'gray'}
         value={purpose}
         onChangeText={value => setPurpose(value)}
       />
@@ -227,7 +230,12 @@ const CreateTravelOrderScreen = () => {
             }}
           />
         )}
-        <Text>{dateLeave.toDateString()}</Text>
+        <Text
+          style={{
+            color: '#000',
+          }}>
+          {dateLeave.toDateString()}
+        </Text>
       </View>
       {errors.date_leave && (
         <Text style={styles.error}>{errors.date_leave[0]}</Text>
@@ -248,7 +256,12 @@ const CreateTravelOrderScreen = () => {
             }}
           />
         )}
-        <Text>{dateReturn.toDateString()}</Text>
+        <Text
+          style={{
+            color: '#000',
+          }}>
+          {dateReturn.toDateString()}
+        </Text>
       </View>
       {errors.date_return && (
         <Text style={styles.error}>{errors.date_return[0]}</Text>
@@ -268,6 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     textAlign: 'center',
+    color: '#000',
   },
   input: {
     height: 40,
@@ -276,6 +290,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
+    color: '#000',
   },
   error: {
     color: 'red',
@@ -296,6 +311,7 @@ const pickerSelectStyles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
+    color: '#000',
   },
   inputAndroid: {
     height: 40,
@@ -304,6 +320,7 @@ const pickerSelectStyles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: '#fff',
+    color: '#000',
   },
 });
 

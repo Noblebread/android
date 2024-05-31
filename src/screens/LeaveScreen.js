@@ -7,6 +7,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
@@ -177,6 +178,7 @@ const LeaveScreen = () => {
               padding: 0,
             }}
             placeholder="Search"
+            placeholderTextColor={'gray'}
             value={search}
             onChangeText={val => setSearch(val)}
           />
@@ -191,15 +193,26 @@ const LeaveScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={filteredLeaveRequests}
-        keyExtractor={(_, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderLeave}
-        contentContainerStyle={{
-          padding: 10,
-        }}
-      />
+      {staffLeaves.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator size="large" color="blue" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredLeaveRequests}
+          keyExtractor={(_, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderLeave}
+          contentContainerStyle={{
+            padding: 10,
+          }}
+        />
+      )}
     </View>
   );
 };

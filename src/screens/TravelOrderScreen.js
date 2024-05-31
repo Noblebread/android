@@ -7,6 +7,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
@@ -207,6 +208,7 @@ const TravelOrderScreen = () => {
               padding: 0,
             }}
             placeholder="Search"
+            placeholderTextColor={'gray'}
             value={search}
             onChangeText={val => setSearch(val)}
           />
@@ -223,15 +225,26 @@ const TravelOrderScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={filteredTravelRequests}
-        keyExtractor={(_, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderTravelOrder}
-        contentContainerStyle={{
-          padding: 10,
-        }}
-      />
+      {travelOrders.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator size="large" color="blue" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredTravelRequests}
+          keyExtractor={(_, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderTravelOrder}
+          contentContainerStyle={{
+            padding: 10,
+          }}
+        />
+      )}
     </View>
   );
 };
